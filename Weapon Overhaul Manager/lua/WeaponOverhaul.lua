@@ -148,7 +148,7 @@ Hooks:Add("MenuManagerBuildCustomMenus", "WeaponOverhaulManagerOptionsBuild", fu
 		if tweak_data.weapon[weapon_name] and tweak_data.weapon[weapon_name].name_id then
 			local _new = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
 			nodes[_new] = MenuHelper:BuildMenu(_new)
-			MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc", _new2, "after")
+			MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc")
 		end
 	end
 end)

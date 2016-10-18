@@ -2,8 +2,8 @@
 	"name" : "Weapon Overhaul Manager",
 	"description" : " ",
 	"author" : "Dr_Newbie",
-	"contact" : "",
-	"version" : "3",
+	"contact" : " ",
+	"version" : "3.1",
 	"libraries" :
 	[
 		{
