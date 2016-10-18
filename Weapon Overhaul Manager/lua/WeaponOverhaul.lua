@@ -10,6 +10,8 @@ Hooks:Add("LocalizationManagerPostInit", "SafeHousePlus_loc", function(loc)
 		["WeaponOverhaulManager_menu_title"] = "Weapon Overhaul Manager",
 		["WeaponOverhaulManager_menu_desc"] = "Easy to create your own balance.",
 		["WeaponOverhaulManager_menu_empty_desc"] = "...",
+		["WeaponOverhaulManager_Save_button_title"] = "[ Save ]",
+		["WeaponOverhaulManager_Save_button_SAVED_decs"] = "All data is saved",
 		["WeaponOverhaulManager_menu.states.timers.reload_not_empty.title"] = "timers.reload_not_empty",
 		["WeaponOverhaulManager_menu.states.timers.reload_empty.title"] = "timers.reload_empty",
 		["WeaponOverhaulManager_menu.states.timers.unequip.title"] = "timers.unequip",
@@ -156,6 +158,17 @@ end)
 Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulate", function(...)
 	local _setting = WeaponOverhaulManager.States_Setting or {}
 	for _, weapon_name in pairs(WeaponOverhaulManager.All_Weapon) do
+		MenuCallbackHandler["WeaponOverhaulManager_Save_button_callback"] = function(self, item)
+			WeaponOverhaulManager:Save_Data()
+			QuickMenu:new(managers.localization:text("WeaponOverhaulManager_menu_title"), managers.localization:text("WeaponOverhaulManager_Save_button_SAVED_decs"), {}):Show()
+		end
+		MenuHelper:AddButton({
+			id = "WeaponOverhaulManager_Save_button_callback",
+			title = "WeaponOverhaulManager_Save_button_title",
+			desc = "WeaponOverhaulManager_menu_empty_desc",
+			callback = "WeaponOverhaulManager_Save_button_callback",
+			menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
+		})
 		local _stats_modifiers = tweak_data.weapon[weapon_name].stats_modifiers or {}
 		for _tmp_v, _tmp_k in pairs(_setting.stats_modifiers) do
 			_stats_modifiers[_tmp_v] = _stats_modifiers[_tmp_v] or 1		
@@ -184,7 +197,6 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulat
 									WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
 									WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] or 0
 									WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = item:value()
-									WeaponOverhaulManager:Save_Data()
 								end
 							end
 							local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. "." .. _name .. ".title")
@@ -215,7 +227,6 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulat
 							WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
 							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
 							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = item:value()
-							WeaponOverhaulManager:Save_Data()
 							end
 					end
 					local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. ".title")
