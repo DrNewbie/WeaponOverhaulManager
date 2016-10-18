@@ -227,7 +227,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulat
 							WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
 							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
 							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = item:value()
-							end
+						end
 					end
 					local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. ".title")
 					MenuHelper:AddSlider({
