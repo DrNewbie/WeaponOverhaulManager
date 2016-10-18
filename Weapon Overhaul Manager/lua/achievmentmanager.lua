@@ -1,4 +1,3 @@
-
 -- This disables the triggering of achievments
 function AchievmentManager:award(id, ...)
 	return

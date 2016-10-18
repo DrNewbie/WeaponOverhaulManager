@@ -9,7 +9,7 @@ Hooks:Add("LocalizationManagerPostInit", "SafeHousePlus_loc", function(loc)
 	LocalizationManager:add_localized_strings({
 		["WeaponOverhaulManager_menu_title"] = "Weapon Overhaul Manager",
 		["WeaponOverhaulManager_menu_desc"] = "Easy to create your own balance.",
-		["WeaponOverhaulManager_menu_empty_desc"] = " ",
+		["WeaponOverhaulManager_menu_empty_desc"] = "...",
 		["WeaponOverhaulManager_menu.states.timers.reload_not_empty.title"] = "timers.reload_not_empty",
 		["WeaponOverhaulManager_menu.states.timers.reload_empty.title"] = "timers.reload_empty",
 		["WeaponOverhaulManager_menu.states.timers.unequip.title"] = "timers.unequip",
@@ -30,42 +30,68 @@ Hooks:Add("LocalizationManagerPostInit", "SafeHousePlus_loc", function(loc)
 		["WeaponOverhaulManager_menu.states.stats.alert_size.title"] = "stats.alert_size",
 		["WeaponOverhaulManager_menu.states.stats.extra_ammo.title"] = "stats.extra_ammo",
 		["WeaponOverhaulManager_menu.states.stats.total_ammo_mod.title"] = "stats.total_ammo_mod",
-		["WeaponOverhaulManager_menu.states.stats.value.title"] = "stats.value"
+		["WeaponOverhaulManager_menu.states.stats.value.title"] = "stats.value",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.damage.title"] = "stats_modifiers.damage",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.spread.title"] = "stats_modifiers.spread",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.recoil.title"] = "stats_modifiers.recoil",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.spread_moving.title"] = "stats_modifiers.spread_moving",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.zoom.title"] = "stats_modifiers.zoom",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.concealment.title"] = "stats_modifiers.concealment",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.suppression.title"] = "stats_modifiers.suppression",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.alert_size.title"] = "stats_modifiers.alert_size",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.extra_ammo.title"] = "stats_modifiers.extra_ammo",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.total_ammo_mod.title"] = "stats_modifiers.total_ammo_mod",
+		["WeaponOverhaulManager_menu.states.stats_modifiers.value.title"] = "stats_modifiers.value" 
 	})
 end )
 
 WeaponOverhaulManager.Main_Options_Menu = "WeaponOverhaulManager_Main_Options_Menu"
 
-local _common2step1 = {min = 0, max = 9999, step = 1}
-local _common2stephcent1 = {min = 0.01, max = 999, step = 0.01}
+local _commom_var = {
+	huge = {min = 0, max = 999, step = 1},
+	tiny = {min = 0.01, max = 999, step = 0.01},
+	tinytiny = {min = 0.01, max = 99, step = 0.01}
+}
 WeaponOverhaulManager.States_Setting = {
 	timers = {
-		reload_not_empty = _common2stephcent1,
-		reload_empty = _common2stephcent1,
-		unequip = _common2stephcent1,
-		equip = _common2stephcent1
+		reload_not_empty = _commom_var.tinytiny,
+		reload_empty = _commom_var.tinytiny,
+		unequip = _commom_var.tinytiny,
+		equip = _commom_var.tinytiny
 	},
-	DAMAGE = _common2step1,
-	CLIP_AMMO_MAX = _common2step1,
-	NR_CLIPS_MAX = _common2step1,
-	AMMO_MAX = _common2step1,
-	AMMO_PICKUP = {_common2stephcent1, _common2stephcent1},
+	DAMAGE = _commom_var.huge,
+	CLIP_AMMO_MAX = _commom_var.huge,
+	NR_CLIPS_MAX = _commom_var.huge,
+	AMMO_MAX = _commom_var.huge,
+	AMMO_PICKUP = {_commom_var.tiny, _commom_var.tiny},
 	stats = {
-		damage = _common2step1,
-		spread = _common2step1,
-		recoil = _common2step1,
-		spread_moving = _common2step1,
-		zoom = _common2step1,
-		concealment = _common2step1,
-		suppression = _common2step1,
-		alert_size = _common2step1,
-		extra_ammo = _common2step1,
-		total_ammo_mod = _common2step1,
-		value = _common2step1
+		damage = _commom_var.huge,
+		spread = _commom_var.huge,
+		recoil = _commom_var.huge,
+		spread_moving = _commom_var.huge,
+		zoom = _commom_var.huge,
+		concealment = _commom_var.huge,
+		suppression = _commom_var.huge,
+		alert_size = _commom_var.huge,
+		extra_ammo = _commom_var.huge,
+		total_ammo_mod = _commom_var.huge,
+		value = _commom_var.huge
+	},
+	stats_modifiers = {
+		damage = _commom_var.huge,
+		spread = _commom_var.huge,
+		recoil = _commom_var.huge,
+		spread_moving = _commom_var.huge,
+		zoom = _commom_var.huge,
+		concealment = _commom_var.huge,
+		suppression = _commom_var.huge,
+		alert_size = _commom_var.huge,
+		extra_ammo = _commom_var.huge,
+		total_ammo_mod = _commom_var.huge,
+		value = _commom_var.huge
 	}
 }
-_common2step1 = {}
-_common2stephcent1 = {}
+_commom_var = {}
 
 WeaponOverhaulManager.Directory = WeaponOverhaulManager.ModPath .. "tweakdata/"
 WeaponOverhaulManager.Settings = WeaponOverhaulManager.Settings or {}
@@ -122,7 +148,7 @@ Hooks:Add("MenuManagerBuildCustomMenus", "WeaponOverhaulManagerOptionsBuild", fu
 		if tweak_data.weapon[weapon_name] and tweak_data.weapon[weapon_name].name_id then
 			local _new = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
 			nodes[_new] = MenuHelper:BuildMenu(_new)
-			MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc")
+			MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc", _new2, "after")
 		end
 	end
 end)
@@ -130,6 +156,11 @@ end)
 Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulate", function(...)
 	local _setting = WeaponOverhaulManager.States_Setting or {}
 	for _, weapon_name in pairs(WeaponOverhaulManager.All_Weapon) do
+		local _stats_modifiers = tweak_data.weapon[weapon_name].stats_modifiers or {}
+		for _tmp_v, _tmp_k in pairs(_setting.stats_modifiers) do
+			_stats_modifiers[_tmp_v] = _stats_modifiers[_tmp_v] or 1		
+		end
+		tweak_data.weapon[weapon_name].stats_modifiers = _stats_modifiers
 		for _state_name, _state_data in pairs(tweak_data.weapon[weapon_name]) do
 			if _setting[_state_name] then
 				local _insert_menu = {}
@@ -224,9 +255,12 @@ function WeaponOverhaulManager:Load_Function(_ww, _type)
 								for var_name2, var_data2 in pairs(var_data) do
 									if type(var_data2) == "table" then
 										for var_name3, var_data3 in pairs(var_data2) do
+											_ww[name][var_name] = _ww[name][var_name] or {}
+											_ww[name][var_name][var_name2] = _ww[name][var_name][var_name2] or {}
 											_ww[name][var_name][var_name2][var_name3] = var_data2
 										end
 									else
+										_ww[name][var_name] = _ww[name][var_name] or {}
 										_ww[name][var_name][var_name2] = var_data2
 									end
 								end
