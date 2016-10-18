@@ -5,7 +5,7 @@ if not tweak_data or not tweak_data.statistics then
 	return
 end
 
-Hooks:Add("LocalizationManagerPostInit", "SafeHousePlus_loc", function(loc)
+Hooks:Add("LocalizationManagerPostInit", "WeaponOverhaulManager_loc", function(loc)
 	LocalizationManager:add_localized_strings({
 		["WeaponOverhaulManager_menu_title"] = "Weapon Overhaul Manager",
 		["WeaponOverhaulManager_menu_desc"] = "Easy to create your own balance.",
