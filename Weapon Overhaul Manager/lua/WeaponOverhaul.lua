@@ -158,91 +158,93 @@ end)
 Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulate", function(...)
 	local _setting = WeaponOverhaulManager.States_Setting or {}
 	for _, weapon_name in pairs(WeaponOverhaulManager.All_Weapon) do
-		MenuCallbackHandler["WeaponOverhaulManager_Save_button_callback"] = function(self, item)
-			WeaponOverhaulManager:Save_Data()
-			QuickMenu:new(managers.localization:text("WeaponOverhaulManager_menu_title"), managers.localization:text("WeaponOverhaulManager_Save_button_SAVED_decs"), {}):Show()
-		end
-		MenuHelper:AddButton({
-			id = "WeaponOverhaulManager_Save_button_callback",
-			title = "WeaponOverhaulManager_Save_button_title",
-			desc = "WeaponOverhaulManager_menu_empty_desc",
-			callback = "WeaponOverhaulManager_Save_button_callback",
-			menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
-		})
-		local _stats_modifiers = tweak_data.weapon[weapon_name].stats_modifiers or {}
-		for _tmp_v, _tmp_k in pairs(_setting.stats_modifiers) do
-			_stats_modifiers[_tmp_v] = _stats_modifiers[_tmp_v] or 1		
-		end
-		tweak_data.weapon[weapon_name].stats_modifiers = _stats_modifiers
-		for _state_name, _state_data in pairs(tweak_data.weapon[weapon_name]) do
-			if _setting[_state_name] then
-				local _insert_menu = {}
-				local _value = -9999
-				local _title_state_name = ""
-				if type(_state_data) == "table" then
-					_insert_menu = _state_data
-					for _name, _data in pairs(_state_data) do
-						if _setting[_state_name][_name] then
-							_value = tweak_data.weapon[weapon_name][_state_name][_name]
-							_title_state_name = _name
-							local _priority = weapon_name .. "..." .. _state_name .. "..." .. _name
-							local _callback_name = "WeaponOverhaulManager0callback___" .. _priority
-							MenuCallbackHandler[_callback_name] = function(self, item)
-								local _data = WeaponOverhaulManager:datasplit(tostring(item._priority), "...")
-								local _weapon_name = _data[1] or ""
-								local _state_name = _data[2] or ""
-								local _name = _data[3] or ""
-								if _weapon_name ~= "" and tweak_data.weapon[_weapon_name] then
-									WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
-									WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
-									WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] or 0
-									WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = item:value()
+		if tweak_data.weapon[weapon_name] and tweak_data.weapon[weapon_name].name_id then
+			MenuCallbackHandler["WeaponOverhaulManager_Save_button_callback"] = function(self, item)
+				WeaponOverhaulManager:Save_Data()
+				QuickMenu:new(managers.localization:text("WeaponOverhaulManager_menu_title"), managers.localization:text("WeaponOverhaulManager_Save_button_SAVED_decs"), {}):Show()
+			end
+			MenuHelper:AddButton({
+				id = "WeaponOverhaulManager_Save_button_callback",
+				title = "WeaponOverhaulManager_Save_button_title",
+				desc = "WeaponOverhaulManager_menu_empty_desc",
+				callback = "WeaponOverhaulManager_Save_button_callback",
+				menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
+			})
+			local _stats_modifiers = tweak_data.weapon[weapon_name].stats_modifiers or {}
+			for _tmp_v, _tmp_k in pairs(_setting.stats_modifiers) do
+				_stats_modifiers[_tmp_v] = _stats_modifiers[_tmp_v] or 1		
+			end
+			tweak_data.weapon[weapon_name].stats_modifiers = _stats_modifiers
+			for _state_name, _state_data in pairs(tweak_data.weapon[weapon_name]) do
+				if _setting[_state_name] then
+					local _insert_menu = {}
+					local _value = -9999
+					local _title_state_name = ""
+					if type(_state_data) == "table" then
+						_insert_menu = _state_data
+						for _name, _data in pairs(_state_data) do
+							if _setting[_state_name][_name] then
+								_value = tweak_data.weapon[weapon_name][_state_name][_name]
+								_title_state_name = _name
+								local _priority = weapon_name .. "..." .. _state_name .. "..." .. _name
+								local _callback_name = "WeaponOverhaulManager0callback___" .. _priority
+								MenuCallbackHandler[_callback_name] = function(self, item)
+									local _data = WeaponOverhaulManager:datasplit(tostring(item._priority), "...")
+									local _weapon_name = _data[1] or ""
+									local _state_name = _data[2] or ""
+									local _name = _data[3] or ""
+									if _weapon_name ~= "" and tweak_data.weapon[_weapon_name] then
+										WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
+										WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
+										WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] or 0
+										WeaponOverhaulManager.Settings[_weapon_name][_state_name][_name] = item:value()
+									end
 								end
+								local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. "." .. _name .. ".title")
+								MenuHelper:AddSlider({
+									id = _callback_name,
+									title = _loc,
+									desc = _loc,
+									callback = _callback_name,
+									value = _value,
+									min = _setting[_state_name][_name].min,
+									max = _setting[_state_name][_name].max,
+									step = _setting[_state_name][_name].step,
+									show_value = true,
+									menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu",
+									priority = _priority
+								})
 							end
-							local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. "." .. _name .. ".title")
-							MenuHelper:AddSlider({
-								id = _callback_name,
-								title = _loc,
-								desc = _loc,
-								callback = _callback_name,
-								value = _value,
-								min = _setting[_state_name][_name].min,
-								max = _setting[_state_name][_name].max,
-								step = _setting[_state_name][_name].step,
-								show_value = true,
-								menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu",
-								priority = _priority
-							})
 						end
-					end
-				else
-					local _priority = weapon_name .. "..." .. _state_name
-					local _callback_name = "WeaponOverhaulManager0callback__" .. _priority
-					_value = tweak_data.weapon[weapon_name][_state_name]
-					MenuCallbackHandler[_callback_name] = function(self, item)
-						local _data = WeaponOverhaulManager:datasplit(tostring(item._priority), "...")
-						local _weapon_name = _data[1] or ""
-						local _state_name = _data[2] or ""
-						if _weapon_name ~= "" and tweak_data.weapon[_weapon_name] then
-							WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
-							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
-							WeaponOverhaulManager.Settings[_weapon_name][_state_name] = item:value()
+					else
+						local _priority = weapon_name .. "..." .. _state_name
+						local _callback_name = "WeaponOverhaulManager0callback__" .. _priority
+						_value = tweak_data.weapon[weapon_name][_state_name]
+						MenuCallbackHandler[_callback_name] = function(self, item)
+							local _data = WeaponOverhaulManager:datasplit(tostring(item._priority), "...")
+							local _weapon_name = _data[1] or ""
+							local _state_name = _data[2] or ""
+							if _weapon_name ~= "" and tweak_data.weapon[_weapon_name] then
+								WeaponOverhaulManager.Settings[_weapon_name] = WeaponOverhaulManager.Settings[_weapon_name] or {}
+								WeaponOverhaulManager.Settings[_weapon_name][_state_name] = WeaponOverhaulManager.Settings[_weapon_name][_state_name] or {}
+								WeaponOverhaulManager.Settings[_weapon_name][_state_name] = item:value()
+							end
 						end
+						local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. ".title")
+						MenuHelper:AddSlider({
+							id = _callback_name,
+							title = _loc,
+							desc = _loc,
+							callback = _callback_name,
+							value = _value,
+							min = _setting[_state_name].min,
+							max = _setting[_state_name].max,
+							step = _setting[_state_name].step,
+							show_value = true,
+							menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu",
+							priority = _priority
+						})
 					end
-					local _loc = tostring("WeaponOverhaulManager_menu.states.".. _state_name .. ".title")
-					MenuHelper:AddSlider({
-						id = _callback_name,
-						title = _loc,
-						desc = _loc,
-						callback = _callback_name,
-						value = _value,
-						min = _setting[_state_name].min,
-						max = _setting[_state_name].max,
-						step = _setting[_state_name].step,
-						show_value = true,
-						menu_id = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu",
-						priority = _priority
-					})
 				end
 			end
 		end
