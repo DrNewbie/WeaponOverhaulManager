@@ -184,7 +184,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulat
 						_insert_menu = _state_data
 						for _name, _data in pairs(_state_data) do
 							if _setting[_state_name][_name] then
-								_value = tweak_data.weapon[weapon_name][_state_name][_name]
+								_value = WeaponOverhaulManager.Settings[weapon_name] and WeaponOverhaulManager.Settings[weapon_name][_state_name][_name] or tweak_data.weapon[weapon_name][_state_name][_name]
 								_title_state_name = _name
 								local _priority = weapon_name .. "..." .. _state_name .. "..." .. _name
 								local _callback_name = "WeaponOverhaulManager0callback___" .. _priority
@@ -219,7 +219,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponOverhaulManagerOptionsPopulat
 					else
 						local _priority = weapon_name .. "..." .. _state_name
 						local _callback_name = "WeaponOverhaulManager0callback__" .. _priority
-						_value = tweak_data.weapon[weapon_name][_state_name]
+						_value = WeaponOverhaulManager.Settings[weapon_name] and WeaponOverhaulManager.Settings[weapon_name][_state_name] or tweak_data.weapon[weapon_name][_state_name]
 						MenuCallbackHandler[_callback_name] = function(self, item)
 							local _data = WeaponOverhaulManager:datasplit(tostring(item._priority), "...")
 							local _weapon_name = _data[1] or ""
