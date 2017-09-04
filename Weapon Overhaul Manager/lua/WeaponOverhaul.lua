@@ -43,7 +43,13 @@ Hooks:Add("LocalizationManagerPostInit", "WeaponOverhaulManager_loc", function(l
 		["WeaponOverhaulManager_menu.states.stats_modifiers.alert_size.title"] = "stats_modifiers.alert_size",
 		["WeaponOverhaulManager_menu.states.stats_modifiers.extra_ammo.title"] = "stats_modifiers.extra_ammo",
 		["WeaponOverhaulManager_menu.states.stats_modifiers.total_ammo_mod.title"] = "stats_modifiers.total_ammo_mod",
-		["WeaponOverhaulManager_menu.states.stats_modifiers.value.title"] = "stats_modifiers.value" 
+		["WeaponOverhaulManager_menu.states.stats_modifiers.value.title"] = "stats_modifiers.value",
+		["WeaponOverhaulManager_menu.states.spread.standing.title"] = "spread.standing",
+		["WeaponOverhaulManager_menu.states.spread.crouching.title"] = "spread.crouching",
+		["WeaponOverhaulManager_menu.states.spread.steelsight.title"] = "spread.steelsight",
+		["WeaponOverhaulManager_menu.states.spread.moving_standing.title"] = "spread.moving_standing",
+		["WeaponOverhaulManager_menu.states.spread.moving_crouching.title"] = "spread.moving_crouching",
+		["WeaponOverhaulManager_menu.states.spread.moving_steelsight.title"] = "spread.moving_steelsight",
 	})
 end )
 
@@ -91,6 +97,14 @@ WeaponOverhaulManager.States_Setting = {
 		extra_ammo = _commom_var.huge,
 		total_ammo_mod = _commom_var.huge,
 		value = _commom_var.huge
+	},
+	spread = {
+		standing = _commom_var.tinytiny,
+		crouching = _commom_var.tinytiny,
+		steelsight = _commom_var.tinytiny,
+		moving_standing = _commom_var.tinytiny,
+		moving_crouching = _commom_var.tinytiny,
+		moving_steelsight = _commom_var.tinytiny
 	}
 }
 _commom_var = {}
@@ -136,21 +150,45 @@ end
 
 Hooks:Add("MenuManagerSetupCustomMenus", "WeaponOverhaulManagerOptionsSetup", function(...)
 	MenuHelper:NewMenu(WeaponOverhaulManager.Main_Options_Menu)
+	local cats = {}
 	for _, weapon_name in pairs(WeaponOverhaulManager.All_Weapon) do
 		if tweak_data.weapon[weapon_name] and tweak_data.weapon[weapon_name].name_id then
 			MenuHelper:NewMenu("WeaponOverhaulManager_".. weapon_name .."_Options_Menu")
+			local cat = tostring(tweak_data.weapon[weapon_name].categories[1])
+			local carn = managers.localization:to_upper_text("menu_" .. cat)
+			if carn:find("ERROR") then
+				cat = "wpn_special"
+			end
+			if not cats[cat] then
+				cats[cat] = true
+			end
 		end
+	end
+	for _cat, _ in pairs(cats) do
+		MenuHelper:NewMenu("WeaponOverhaulManager_Cat_".. _cat .."_Options_Menu")
 	end
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "WeaponOverhaulManagerOptionsBuild", function(menu_manager, nodes)
 	nodes[WeaponOverhaulManager.Main_Options_Menu] = MenuHelper:BuildMenu(WeaponOverhaulManager.Main_Options_Menu)
-	MenuHelper:AddMenuItem(MenuHelper.menus.lua_mod_options_menu, WeaponOverhaulManager.Main_Options_Menu, "WeaponOverhaulManager_menu_title", "WeaponOverhaulManager_menu_desc")
+	MenuHelper:AddMenuItem(nodes["blt_options"], WeaponOverhaulManager.Main_Options_Menu, "WeaponOverhaulManager_menu_title", "WeaponOverhaulManager_menu_desc")
 	for _, weapon_name in pairs(WeaponOverhaulManager.All_Weapon) do
 		if tweak_data.weapon[weapon_name] and tweak_data.weapon[weapon_name].name_id then
-			local _new = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
-			nodes[_new] = MenuHelper:BuildMenu(_new)
-			MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc")
+			local cat = tostring(tweak_data.weapon[weapon_name].categories[1])
+			local carn = managers.localization:to_upper_text("menu_" .. cat)
+			if carn:find("ERROR") then
+				cat = "wpn_special"
+			end
+			local fcat = "WeaponOverhaulManager_Cat_".. cat .."_Options_Menu"
+			if cat ~= "nil" then
+				if not nodes[fcat] then
+					nodes[fcat] = MenuHelper:BuildMenu(fcat)
+					MenuHelper:AddMenuItem(nodes[WeaponOverhaulManager.Main_Options_Menu], fcat, "menu_" .. cat, "WeaponOverhaulManager_menu_empty_desc")
+				end
+				local _new = "WeaponOverhaulManager_".. weapon_name .."_Options_Menu"
+				nodes[_new] = MenuHelper:BuildMenu(_new)
+				MenuHelper:AddMenuItem(nodes[fcat], _new, tweak_data.weapon[weapon_name].name_id, "WeaponOverhaulManager_menu_empty_desc")
+			end
 		end
 	end
 end)

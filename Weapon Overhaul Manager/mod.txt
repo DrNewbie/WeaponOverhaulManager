@@ -1,10 +1,13 @@
 {
 	"name" : "Weapon Overhaul Manager",
-	"description" : " ",
+	"description" : "Weapon Overhaul Manager",
 	"author" : "Dr_Newbie",
-	"contact" : " ",
-	"version" : "3.4",
+	"contact" : "http://modwork.shop/17847",
+	"version" : "5",
 	"priority": 1,
+	"image": "Dr_Newbie.png",
+	"color": "0 0 0",
+	"blt_version": 2,
 	"libraries" :
 	[
 		{
