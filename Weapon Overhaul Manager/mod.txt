@@ -3,9 +3,9 @@
 	"description" : "Weapon Overhaul Manager",
 	"author" : "Dr_Newbie",
 	"contact" : "http://modwork.shop/17847",
-	"version" : "5",
+	"version" : "6",
 	"priority": 1,
-	"image": "Dr_Newbie.png",
+	"image": "Logo.png",
 	"color": "0 0 0",
 	"blt_version": 2,
 	"libraries" :
